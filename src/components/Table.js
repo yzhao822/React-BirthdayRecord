@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useEffect } from "react";
+import { useState } from "react";
 
-function Table() {
-  const people = [
+
+function Table({ sortTerm }) {
+  const intialPeople = [
     {
       name: "Rhianna Johnson",
       birth: "11/30/2011",
@@ -34,7 +36,37 @@ function Table() {
       name: "Eliza Baxter",
       birth: "10/31/1999",
     },
-  ]
+  ];
+
+  //use a useState hook to track people
+  const [people, setPeople] = useState(intialPeople);
+
+  const sortByName = () => {
+
+    let deepIntialPeople = [...intialPeople];
+    deepIntialPeople = people.sort((a, b) => {
+      return a.name.localeCompare(b.name);
+    });
+    setPeople([...deepIntialPeople]);
+  };
+
+  const sortByAge = () => {
+    let deepIntialPeople = [...intialPeople];
+    deepIntialPeople = deepIntialPeople.sort((a, b) => {
+      return new Date(a.birth).getTime() - new Date(b.birth).getTime();
+    });
+    setPeople([...deepIntialPeople]);
+  };
+
+  //use useEffect to control the side effect, dependency array is sortTerm, everytime sortTerm value changes, it will run the code
+  useEffect(() => {
+    if (sortTerm === "sortByName") {
+      sortByName();
+    }
+    if (sortTerm === "sortByAge") {
+      sortByAge();
+    }
+  }, [sortTerm]);
 
   return (
     <div className="table-div">
@@ -47,17 +79,28 @@ function Table() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td />
-              <td />
-            </tr>
+            {people.map((person, i) => {
+              const { name, birth } = person;
+              return (
+                <tr key={i}>
+                  <td>{name}</td>
+                  <td>{birth}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
     </div>
-  )
+  );
 }
 
-export default Table
+export default Table;
+
+
+
+
+
+
 
 
